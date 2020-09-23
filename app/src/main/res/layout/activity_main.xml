@@ -7,39 +7,4 @@
     android:background="@color/colorPrimary"
     tools:context=".MainActivity">
 
-    <EditText
-        android:id="@+id/noteTitleEditText"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="5dp"
-        android:background="@color/colorPrimaryLight"
-        android:ems="10"
-        android:inputType="text"
-        android:text="Note Title"
-        app:layout_constraintBottom_toTopOf="@id/noteBodyEditText"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <EditText
-        android:id="@+id/noteBodyEditText"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="20dp"
-        android:background="@color/colorPrimaryLight"
-        android:ems="10"
-        android:gravity="start"
-        android:inputType="text"
-        android:text="Note Body"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/noteTitleEditText" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
