@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 public class NotesAdapter extends RecyclerView.Adapter<ViewHolder> {
 
