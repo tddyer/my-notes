@@ -3,11 +3,13 @@ package com.example.mynotes;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -113,6 +115,29 @@ public class MainActivity extends AppCompatActivity
         if (!notesList.isEmpty()) {
             notesList.remove(notesList.size() - 1);
             mAdapter.notifyDataSetChanged();
+        }
+    }
+
+    // options menu
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.action_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()) {
+            case R.id.menuHelp:
+                Toast.makeText(this, "You want to ask for help", Toast.LENGTH_SHORT).show();
+                return true;
+            case R.id.menuAddNote:
+                Toast.makeText(this, "You have chosen to add a note", Toast.LENGTH_SHORT).show();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
