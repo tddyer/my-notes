@@ -24,4 +24,16 @@ public class Note {
     public String getLastSave() {
         return lastSave;
     }
+
+    public void setNote(String text) {
+        this.note = text;
+    }
+
+    public void setTitle(String text) {
+        this.title = text;
+    }
+
+    public void setLastSave(String time) {
+        this.lastSave = time;
+    }
 }

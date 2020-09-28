@@ -16,13 +16,13 @@ import android.view.View;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
     implements View.OnClickListener, View.OnLongClickListener {
 
-    private static final int REQ_ID = 1;
+    private static final int NEW_NOTE_ID = 1;
+    private static final int EXISTING_NOTE_ID = 2;
     private static final String TAG = "MainActivity";
 
     private final List<Note> notesList = new ArrayList<>();
@@ -47,15 +47,23 @@ public class MainActivity extends AppCompatActivity
 
     // activity navigation
 
-    void launchEditActivity() {
+    void launchEmptyEditActivity() {
         Intent intent = new Intent(this, EditActivity.class);
-        startActivityForResult(intent, REQ_ID);
+        startActivityForResult(intent, NEW_NOTE_ID);
+    }
+
+    void launchExistingEditActivity(Note note, int pos) {
+        Intent intent = new Intent(this, EditActivity.class);
+        intent.putExtra("SELECTED_NOTE_TITLE", note.title);
+        intent.putExtra("SELECTED_NOTE_BODY", note.note);
+        intent.putExtra("SELECTED_NOTE_POS", pos);
+        startActivityForResult(intent, EXISTING_NOTE_ID);
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQ_ID) {
+        if (requestCode == NEW_NOTE_ID) {
             if (resultCode == RESULT_OK) {
                 // data was returned successfully
                 String title = data.getStringExtra("NOTE_TITLE");
@@ -64,6 +72,23 @@ public class MainActivity extends AppCompatActivity
 
                 // add new note to top of note list
                 addTop(title, body, time);
+            } else {
+                // data wasn't returned successfully
+                Log.d(TAG, "onActivityResult: Result code: " + resultCode);
+            }
+        } else if (requestCode == EXISTING_NOTE_ID) {
+            if (resultCode == RESULT_OK) {
+                Note n;
+                int pos = data.getIntExtra("NOTE_POS", -1);
+                if (pos > -1) {
+                    n = notesList.get(pos);
+                    n.setTitle(data.getStringExtra("NOTE_TITLE"));
+                    n.setNote(data.getStringExtra("NOTE_BODY"));
+                    n.setLastSave(data.getStringExtra("NOTE_TIME"));
+                    mAdapter.notifyDataSetChanged();
+                } else {
+                    Log.d(TAG, "onActivityResult: "+ "An error occurred");
+                }
             } else {
                 // data wasn't returned successfully
                 Log.d(TAG, "onActivityResult: Result code: " + resultCode);
@@ -80,17 +105,15 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onClick(View v) {  // click listener called by ViewHolder clicks
         int pos = recyclerView.getChildLayoutPosition(v);
-        Note m = notesList.get(pos);
-        Toast.makeText(v.getContext(), "SHORT " + m.toString(), Toast.LENGTH_SHORT).show();
+        Note n = notesList.get(pos);
+        launchExistingEditActivity(n, pos);
     }
 
     // From OnLongClickListener
     @Override
     public boolean onLongClick(View v) {  // long click listener called by ViewHolder long clicks
         int pos = recyclerView.getChildLayoutPosition(v);
-        Note m = notesList.get(pos);
         deleteNote(pos);
-        Toast.makeText(v.getContext(), "LONG " + m.toString(), Toast.LENGTH_SHORT).show();
         return true;
     }
 
@@ -108,24 +131,6 @@ public class MainActivity extends AppCompatActivity
         mAdapter.notifyDataSetChanged();
     }
 
-    public void addEnd(View v) {
-        notesList.add(new Note("Note", "Note", new Date().toString()));
-        mAdapter.notifyDataSetChanged();
-    }
-
-    public void removeTop(View v) {
-        if (!notesList.isEmpty()) {
-            notesList.remove(0);
-            mAdapter.notifyDataSetChanged();
-        }
-    }
-
-    public void removeEnd(View v) {
-        if (!notesList.isEmpty()) {
-            notesList.remove(notesList.size() - 1);
-            mAdapter.notifyDataSetChanged();
-        }
-    }
 
     public void removePos(int pos) {
         if (!notesList.isEmpty()) {
@@ -150,7 +155,7 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(this, "You want to ask for help", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.menuAddNote:
-                launchEditActivity();
+                launchEmptyEditActivity();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -163,13 +168,12 @@ public class MainActivity extends AppCompatActivity
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                System.out.println("DELETED");
                 removePos(pos);
             }
         });
         builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int id) {
-                System.out.println("NOT DELETED");
+                // do nothing
             }
         });
         builder.setMessage("Are you sure you want to delete this note?");
@@ -178,5 +182,4 @@ public class MainActivity extends AppCompatActivity
         AlertDialog dialog = builder.create();
         dialog.show();
     }
-
 }

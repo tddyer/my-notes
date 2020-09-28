@@ -18,6 +18,7 @@ public class EditActivity extends AppCompatActivity {
     private EditText noteTitleEditText;
     private EditText noteBodyEditText;
     private final SimpleDateFormat df = new SimpleDateFormat("EEE MMM d, h:mm a");
+    int pos = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,6 +27,17 @@ public class EditActivity extends AppCompatActivity {
 
         noteTitleEditText = findViewById(R.id.noteTitleEditText);
         noteBodyEditText = findViewById(R.id.noteBodyEditText);
+
+
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            System.out.println("EXISTING NOTE");
+            noteTitleEditText.setText(bundle.getString("SELECTED_NOTE_TITLE"));
+            noteBodyEditText.setText(bundle.getString("SELECTED_NOTE_BODY"));
+            pos = bundle.getInt("SELECTED_NOTE_POS");
+        } else {
+            System.out.println("NEW NOTE");
+        }
     }
 
     // options menu
@@ -45,6 +57,9 @@ public class EditActivity extends AppCompatActivity {
             data.putExtra("NOTE_TITLE", noteTitleEditText.getText().toString());
             data.putExtra("NOTE_BODY", noteBodyEditText.getText().toString());
             data.putExtra("NOTE_TIME", df.format(new Date()));
+            if (pos > -1) {
+                data.putExtra("NOTE_POS", pos);
+            }
             setResult(RESULT_OK, data);
             finish();
             return true;
