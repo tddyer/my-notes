@@ -10,37 +10,35 @@ import android.view.ViewGroup;
 import java.util.Date;
 import java.util.List;
 
-public class NotesAdapter extends RecyclerView.Adapter<ViewHolder> {
+public class NotesAdapter extends RecyclerView.Adapter<NoteViewHolder> {
 
-    private static final String TAG = "EmployeesAdapter";
     private List<Note> noteList;
     private MainActivity mainAct;
 
-    NotesAdapter(List<Note> list, MainActivity ma) {
+    public NotesAdapter(List<Note> list, MainActivity ma) {
         this.noteList = list;
         mainAct = ma;
     }
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
-        Log.d(TAG, "onCreateViewHolder: MAKING NEW MyViewHolder");
-
+    public NoteViewHolder onCreateViewHolder(@NonNull final ViewGroup parent, int viewType) {
+        // create inflater from parent's context, then inflate it using the defined layout
+        // for each list card
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.note_list_card, parent, false);
 
+        // calls appropriate functions from main activity when a click/long click is detected
         itemView.setOnClickListener(mainAct);
         itemView.setOnLongClickListener(mainAct);
 
-        return new ViewHolder(itemView);
+        return new NoteViewHolder(itemView);
     }
 
+    // sets data into view holder to match a Note object
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Log.d(TAG, "onBindViewHolder: FILLING VIEW HOLDER Employee " + position);
-
+    public void onBindViewHolder(@NonNull NoteViewHolder holder, int position) {
         Note note = noteList.get(position);
-
         holder.title.setText(note.getTitle());
         holder.dateTime.setText(new Date().toString());
         holder.noteBody.setText(note.getNote());

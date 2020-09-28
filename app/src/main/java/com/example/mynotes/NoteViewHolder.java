@@ -5,13 +5,13 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
-public class ViewHolder extends RecyclerView.ViewHolder {
+public class NoteViewHolder extends RecyclerView.ViewHolder {
 
-    public TextView title;
+    TextView title;
     TextView dateTime;
     TextView noteBody;
 
-    ViewHolder(View view) {
+    NoteViewHolder(View view) {
         super(view);
         title = view.findViewById(R.id.noteTitleTextView);
         dateTime = view.findViewById(R.id.dateTimeTextView);
