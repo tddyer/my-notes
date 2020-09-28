@@ -45,7 +45,9 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
-    void launchEditActivity(View v) {
+    // activity navigation
+
+    void launchEditActivity() {
         Intent intent = new Intent(this, EditActivity.class);
         startActivityForResult(intent, REQ_ID);
     }
@@ -122,7 +124,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.action_menu, menu);
+        getMenuInflater().inflate(R.menu.main_activity_menu, menu);
         return true;
     }
 
@@ -134,7 +136,7 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(this, "You want to ask for help", Toast.LENGTH_SHORT).show();
                 return true;
             case R.id.menuAddNote:
-                Toast.makeText(this, "You have chosen to add a note", Toast.LENGTH_SHORT).show();
+                launchEditActivity();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
