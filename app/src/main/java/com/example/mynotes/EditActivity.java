@@ -35,9 +35,15 @@ public class EditActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
 
         if (item.getItemId() == R.id.menuSaveNote) {
-            Toast.makeText(this, "Note saved", Toast.LENGTH_SHORT).show();
+            // saving data from edit text fields for note creation
+            Intent data = new Intent();
+            data.putExtra("NOTE_TITLE", noteTitleEditText.getText().toString());
+            data.putExtra("NOTE_BODY", noteBodyEditText.getText().toString());
+//            Toast.makeText(this, "Note saved", Toast.LENGTH_SHORT).show();
+            setResult(RESULT_OK, data);
+            finish();
             return true;
-        } else {             
+        } else {
             return super.onOptionsItemSelected(item);
         }
     }

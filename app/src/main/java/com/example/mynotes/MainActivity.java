@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -53,14 +54,17 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (requestCode == REQ_ID) {
-            if (resultCode == 1) {
+            if (resultCode == RESULT_OK) {
                 // data was returned successfully
+                String title = data.getStringExtra("NOTE_TITLE");
+                String body = data.getStringExtra("NOTE_BODY");
+                Toast.makeText(this, title + "\n" + body, Toast.LENGTH_LONG).show();
             } else {
                 // data wasn't returned successfully
+                Log.d("MainActivity", "onActivityResult: No data returned");
             }
         }
     }
