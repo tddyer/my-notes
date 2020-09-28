@@ -1,9 +1,10 @@
 package com.example.mynotes;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,12 +15,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity
     implements View.OnClickListener, View.OnLongClickListener {
@@ -30,6 +28,7 @@ public class MainActivity extends AppCompatActivity
     private final List<Note> notesList = new ArrayList<>();
     private RecyclerView recyclerView;
     private NotesAdapter mAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,15 +43,6 @@ public class MainActivity extends AppCompatActivity
 
         // add items in linear layout (i.e in order)
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        SimpleDateFormat df = new SimpleDateFormat("EEE MMM d, h:mm a");
-
-        // creating some notes
-        for (int i = 0; i < 30; i++) {
-            String d = df.format(new Date());
-            System.out.println(d);
-            notesList.add(new Note("Assignment " + String.valueOf(i) + " is due soon.", "Assignment " + String.valueOf(i), d));
-        }
     }
 
     // activity navigation
@@ -99,6 +89,7 @@ public class MainActivity extends AppCompatActivity
     public boolean onLongClick(View v) {  // long click listener called by ViewHolder long clicks
         int pos = recyclerView.getChildLayoutPosition(v);
         Note m = notesList.get(pos);
+        deleteNote(pos);
         Toast.makeText(v.getContext(), "LONG " + m.toString(), Toast.LENGTH_SHORT).show();
         return true;
     }
@@ -136,6 +127,13 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    public void removePos(int pos) {
+        if (!notesList.isEmpty()) {
+            notesList.remove(pos);
+            mAdapter.notifyDataSetChanged();
+        }
+    }
+
     // options menu
 
     @Override
@@ -157,6 +155,28 @@ public class MainActivity extends AppCompatActivity
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    // alert dialogs
+
+    public void deleteNote(final int pos) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                System.out.println("DELETED");
+                removePos(pos);
+            }
+        });
+        builder.setNegativeButton("CANCEL", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                System.out.println("NOT DELETED");
+            }
+        });
+        builder.setMessage("Are you sure you want to delete this note?");
+        builder.setTitle("Delete Note");
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
 }
