@@ -14,14 +14,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity
     implements View.OnClickListener, View.OnLongClickListener {
 
     private static final int REQ_ID = 1;
+    private static final String TAG = "MainActivity";
 
     private final List<Note> notesList = new ArrayList<>();
     private RecyclerView recyclerView;
@@ -33,6 +37,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
 
         recyclerView = findViewById(R.id.notesRecyclerView);
+
         // creates adapter using notesList + this (main activity) and assigns it to recyclerview
         mAdapter = new NotesAdapter(notesList, this);
         recyclerView.setAdapter(mAdapter);
@@ -40,9 +45,13 @@ public class MainActivity extends AppCompatActivity
         // add items in linear layout (i.e in order)
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        SimpleDateFormat df = new SimpleDateFormat("EEE MMM d, h:mm a");
+
         // creating some notes
         for (int i = 0; i < 30; i++) {
-            notesList.add(new Note("Assignment " + String.valueOf(i) + " is due soon.", "Assignment " + String.valueOf(i), new Date().toString()));
+            String d = df.format(new Date());
+            System.out.println(d);
+            notesList.add(new Note("Assignment " + String.valueOf(i) + " is due soon.", "Assignment " + String.valueOf(i), d));
         }
     }
 
@@ -61,11 +70,16 @@ public class MainActivity extends AppCompatActivity
                 // data was returned successfully
                 String title = data.getStringExtra("NOTE_TITLE");
                 String body = data.getStringExtra("NOTE_BODY");
-                Toast.makeText(this, title + "\n" + body, Toast.LENGTH_LONG).show();
+                String time = data.getStringExtra("NOTE_TIME");
+
+                // add new note to top of note list
+                addTop(title, body, time);
             } else {
                 // data wasn't returned successfully
-                Log.d("MainActivity", "onActivityResult: No data returned");
+                Log.d(TAG, "onActivityResult: Result code: " + resultCode);
             }
+        } else {
+            Log.d(TAG, "onActivityResult: Request code: " + requestCode);
         }
     }
 
@@ -86,22 +100,20 @@ public class MainActivity extends AppCompatActivity
         int pos = recyclerView.getChildLayoutPosition(v);
         Note m = notesList.get(pos);
         Toast.makeText(v.getContext(), "LONG " + m.toString(), Toast.LENGTH_SHORT).show();
-        return true; // true means only long click is registered, false means it passes onto other listeners (onClick, swipe, etc)
-        // eg for false: you want to detect screen usage (i.e clicks) but also want to do something on long press, so on click should
-        // be registered on a long click
+        return true;
     }
 
+    // TODO: Save state here when leaving app
     @Override
     public void onBackPressed() {
         Toast.makeText(this, "The back button was pressed - Bye!", Toast.LENGTH_SHORT).show();
         super.onBackPressed();
-
     }
 
     // add/remove notes from list of notes
 
-    public void addTop(View v) {
-        notesList.add(0, new Note("Note", "Note", new Date().toString()));
+    public void addTop(String title, String body, String time) {
+        notesList.add(0, new Note(body, title, time));
         mAdapter.notifyDataSetChanged();
     }
 

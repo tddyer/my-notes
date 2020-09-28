@@ -9,6 +9,9 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import java.text.DateFormat;
+import java.util.Date;
+
 public class EditActivity extends AppCompatActivity {
 
     private EditText noteTitleEditText;
@@ -39,6 +42,7 @@ public class EditActivity extends AppCompatActivity {
             Intent data = new Intent();
             data.putExtra("NOTE_TITLE", noteTitleEditText.getText().toString());
             data.putExtra("NOTE_BODY", noteBodyEditText.getText().toString());
+            data.putExtra("NOTE_TIME", DateFormat.getInstance().format(new Date()));
 //            Toast.makeText(this, "Note saved", Toast.LENGTH_SHORT).show();
             setResult(RESULT_OK, data);
             finish();

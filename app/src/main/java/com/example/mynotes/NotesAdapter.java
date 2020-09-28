@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -14,6 +16,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NoteViewHolder> {
 
     private List<Note> noteList;
     private MainActivity mainAct;
+
+    SimpleDateFormat df = new SimpleDateFormat("EEE MMM d, h:mm a");
 
     public NotesAdapter(List<Note> list, MainActivity ma) {
         this.noteList = list;
@@ -40,7 +44,7 @@ public class NotesAdapter extends RecyclerView.Adapter<NoteViewHolder> {
     public void onBindViewHolder(@NonNull NoteViewHolder holder, int position) {
         Note note = noteList.get(position);
         holder.title.setText(note.getTitle());
-        holder.dateTime.setText(new Date().toString());
+        holder.dateTime.setText(note.getLastSave());
         holder.noteBody.setText(note.getNote());
     }
 
