@@ -34,6 +34,8 @@ public class MainActivity extends AppCompatActivity
     private static final int EXISTING_NOTE_ID = 2;
     private static final String TAG = "MainActivity";
 
+    int noteCount;
+
     private List<Note> notesList = new ArrayList<>();
     private RecyclerView recyclerView;
     private NotesAdapter mAdapter;
@@ -59,6 +61,14 @@ public class MainActivity extends AppCompatActivity
         if (notesList.size() > 0) {
             mAdapter.notifyDataSetChanged();
         }
+    }
+
+    // updating app title
+    @Override
+    public void onResume() {
+        noteCount = notesList.size();
+        setTitle(getResources().getString(R.string.app_name) + " (" + String.valueOf(noteCount) + ")");
+        super.onResume();
     }
 
     @Override
@@ -249,6 +259,8 @@ public class MainActivity extends AppCompatActivity
             notesList.remove(pos);
             mAdapter.notifyDataSetChanged();
         }
+        noteCount = notesList.size();
+        setTitle(getResources().getString(R.string.app_name) + " (" + String.valueOf(noteCount) + ")");
     }
 
     public void moveToTop(Note n, int pos) {

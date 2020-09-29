@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MyNotes</string>
+    <string name="app_name">Multi Notes</string>
     <string name="create_note_icon_text">Create Note</string>
     <string name="help_icon_text">Help</string>
     <string name="edit_activity_menu_save">Save note</string>
