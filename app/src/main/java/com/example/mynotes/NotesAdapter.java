@@ -45,7 +45,12 @@ public class NotesAdapter extends RecyclerView.Adapter<NoteViewHolder> {
         Note note = noteList.get(position);
         holder.title.setText(note.getTitle());
         holder.dateTime.setText(note.getLastSave());
-        holder.noteBody.setText(note.getNote());
+        if (note.getNote().length() < 80) {
+            holder.noteBody.setText(note.getNote());
+        } else {
+            String display = note.getNote().substring(0, 80) + "...";
+            holder.noteBody.setText(display);
+        }
     }
 
     @Override
