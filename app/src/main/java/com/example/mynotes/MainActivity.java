@@ -67,14 +67,20 @@ public class MainActivity extends AppCompatActivity
         super.onPause();
     }
 
+    // takes in the arraylist of notes and saves to json file
     public void saveNotes(List<Note> notes) {
         try {
+            // get output stream from Notes.json file
             FileOutputStream fos = getApplicationContext().
                     openFileOutput("Notes.json", Context.MODE_PRIVATE);
             JsonWriter writer = new JsonWriter(new OutputStreamWriter(fos, StandardCharsets.UTF_8));
             writer.setIndent("  ");
+
+            // start parsing array of notes from input arraylist
             writer.beginArray();
             for (Note n : notes) {
+                // for each note in array of notes, save the individual note
+                //      see saveNote() below
                 saveNote(writer, n);
             }
             writer.endArray();
@@ -84,6 +90,7 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    // writes individual note to json file
     public void saveNote(JsonWriter writer, Note note) {
         try {
             writer.beginObject();
@@ -94,15 +101,39 @@ public class MainActivity extends AppCompatActivity
         } catch (Exception e) {
             e.getStackTrace();
         }
-
     }
 
+    // load saved notes from Notes.json file stored in device file system
+    private void loadNotes(List<Note> notes) {
+        try {
+            // create input stream from Notes.json file
+            InputStream is = getApplicationContext().openFileInput("Notes.json");
+            JsonReader reader = new JsonReader(new InputStreamReader(is, StandardCharsets.UTF_8));
+
+            // begin the array of notes from Notes.json file
+            reader.beginArray();
+            while (reader.hasNext()) { // while there are still notes left in array...
+                // load each individual note into notes arraylist
+                //      see loadNote() below
+                notes.add(loadNote(reader));
+            }
+            reader.endArray();
+        } catch (FileNotFoundException e) {
+            System.out.println("NO EXISTING NOTES FOUND");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    // loads individual notes from json file
     private Note loadNote(JsonReader reader) {
         Note note = new Note();
 
         try {
+            // begin the individual note object
             reader.beginObject();
-            while (reader.hasNext()) {
+            while (reader.hasNext()) { // while there are still items in the note...
+                // read token name and save to the local Note object
                 String tokenName = reader.nextName();
                 switch (tokenName) {
                     case "title":
@@ -123,24 +154,7 @@ public class MainActivity extends AppCompatActivity
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return note;
-    }
-
-    private void loadNotes(List<Note> notes) {
-        try {
-            InputStream is = getApplicationContext().openFileInput("Notes.json");
-            JsonReader reader = new JsonReader(new InputStreamReader(is, StandardCharsets.UTF_8));
-            reader.beginArray();
-            while (reader.hasNext()) {
-                notes.add(loadNote(reader));
-            }
-            reader.endArray();
-        } catch (FileNotFoundException e) {
-            System.out.println("NO EXISTING NOTES FOUND");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     // activity navigation
