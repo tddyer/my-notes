@@ -3,4 +3,6 @@
     <string name="create_note_icon_text">Create Note</string>
     <string name="help_icon_text">Help</string>
     <string name="edit_activity_menu_save">Save note</string>
+    <string name="copyright_label">© 2020, Tanner Dyer</string>
+    <string name="version_number">Version 1.0</string>
 </resources>

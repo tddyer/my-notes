@@ -32,6 +32,7 @@ public class MainActivity extends AppCompatActivity
 
     private static final int NEW_NOTE_ID = 1;
     private static final int EXISTING_NOTE_ID = 2;
+    private static final int ABOUT_ID = 3;
     private static final String TAG = "MainActivity";
 
     int noteCount;
@@ -165,6 +166,11 @@ public class MainActivity extends AppCompatActivity
 
     // activity navigation
 
+    void launchAboutActivity( ){
+        Intent intent = new Intent(this, AboutActivity.class);
+        startActivityForResult(intent, ABOUT_ID);
+    }
+
     void launchEmptyEditActivity() {
         Intent intent = new Intent(this, EditActivity.class);
         startActivityForResult(intent, NEW_NOTE_ID);
@@ -277,7 +283,7 @@ public class MainActivity extends AppCompatActivity
 
         switch (item.getItemId()) {
             case R.id.menuHelp:
-                Toast.makeText(this, "You want to ask for help", Toast.LENGTH_SHORT).show();
+                launchAboutActivity();
                 return true;
             case R.id.menuAddNote:
                 launchEmptyEditActivity();
