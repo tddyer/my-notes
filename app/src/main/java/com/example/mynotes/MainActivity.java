@@ -199,7 +199,7 @@ public class MainActivity extends AppCompatActivity
                     n.setTitle(data.getStringExtra("NOTE_TITLE"));
                     n.setNote(data.getStringExtra("NOTE_BODY"));
                     n.setLastSave(data.getStringExtra("NOTE_TIME"));
-                    mAdapter.notifyDataSetChanged();
+                    moveToTop(n, pos);
                 } else {
                     Toast.makeText(this, "An error occurred while editing your note", Toast.LENGTH_LONG).show();
                 }
@@ -249,12 +249,16 @@ public class MainActivity extends AppCompatActivity
         mAdapter.notifyDataSetChanged();
     }
 
-
     public void removePos(int pos) {
         if (!notesList.isEmpty()) {
             notesList.remove(pos);
             mAdapter.notifyDataSetChanged();
         }
+    }
+
+    public void moveToTop(Note n, int pos) {
+        notesList.remove(pos);
+        addTop(n.title, n.note, n.lastSave);
     }
 
     // options menu
