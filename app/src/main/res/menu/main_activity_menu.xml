@@ -4,12 +4,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:id="@+id/menuHelp"
-        android:icon="@android:drawable/ic_menu_help"
+        android:icon="@drawable/ic_baseline_help_24"
         android:title="@string/help_icon_text"
         app:showAsAction="ifRoom"/>
     <item
         android:id="@+id/menuAddNote"
-        android:icon="@android:drawable/ic_menu_add"
+        android:icon="@drawable/ic_baseline_note_add_24"
         android:title="@string/create_note_icon_text"
         app:showAsAction="always" />
 
