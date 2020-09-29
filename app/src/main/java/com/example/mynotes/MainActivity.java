@@ -89,8 +89,6 @@ public class MainActivity extends AppCompatActivity
             // start parsing array of notes from input arraylist
             writer.beginArray();
             for (Note n : notes) {
-                // for each note in array of notes, save the individual note
-                //      see saveNote() below
                 saveNote(writer, n);
             }
             writer.endArray();
@@ -123,8 +121,6 @@ public class MainActivity extends AppCompatActivity
             // begin the array of notes from Notes.json file
             reader.beginArray();
             while (reader.hasNext()) { // while there are still notes left in array...
-                // load each individual note into notes arraylist
-                //      see loadNote() below
                 notes.add(loadNote(reader));
             }
             reader.endArray();
