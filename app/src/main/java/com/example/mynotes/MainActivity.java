@@ -231,13 +231,6 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    // TODO: Save state here when leaving app
-    @Override
-    public void onBackPressed() {
-        Toast.makeText(this, "The back button was pressed - Bye!", Toast.LENGTH_SHORT).show();
-        super.onBackPressed();
-    }
-
     // add/remove notes from list of notes
 
     public void addTop(String title, String body, String time) {
