@@ -65,13 +65,18 @@ public class EditActivity extends AppCompatActivity {
 
     public void returnNoteData() {
         Intent data = new Intent();
-        data.putExtra("NOTE_TITLE", noteTitleEditText.getText().toString());
-        data.putExtra("NOTE_BODY", noteBodyEditText.getText().toString());
-        data.putExtra("NOTE_TIME", df.format(new Date()));
-        if (pos > -1) {
-            data.putExtra("NOTE_POS", pos);
+        if (noteTitleEditText.getText().toString().equals("")) {
+            // no title was given - discard note and alert user with toast in main activity
+            setResult(RESULT_CANCELED);
+        } else {
+            data.putExtra("NOTE_TITLE", noteTitleEditText.getText().toString());
+            data.putExtra("NOTE_BODY", noteBodyEditText.getText().toString());
+            data.putExtra("NOTE_TIME", df.format(new Date()));
+            if (pos > -1) {
+                data.putExtra("NOTE_POS", pos);
+            }
+            setResult(RESULT_OK, data);
         }
-        setResult(RESULT_OK, data);
     }
 
     // options menu

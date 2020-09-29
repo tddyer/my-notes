@@ -186,7 +186,8 @@ public class MainActivity extends AppCompatActivity
                 addTop(title, body, time);
             } else {
                 // data wasn't returned successfully
-                Log.d(TAG, "onActivityResult: Result code: " + resultCode);
+                Toast.makeText(this, "The previous note was not provided a title" +
+                        " so it was not saved.", Toast.LENGTH_LONG).show();
             }
         } else if (requestCode == EXISTING_NOTE_ID) {
             if (resultCode == RESULT_OK) {
@@ -205,7 +206,8 @@ public class MainActivity extends AppCompatActivity
                 }
             } else {
                 // data wasn't returned successfully
-                Log.d(TAG, "onActivityResult: Result code: " + resultCode);
+                Toast.makeText(this, "The previous note was not provided a title" +
+                        " so it was not saved.", Toast.LENGTH_LONG).show();
             }
         } else {
             Log.d(TAG, "onActivityResult: Request code: " + requestCode);
