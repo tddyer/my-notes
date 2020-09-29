@@ -7,11 +7,11 @@ public class Note {
     String title;
     String lastSave;
 
-    Note(String note, String title, String lastSave) {
-        this.note = note;
-        this.title = title;
-        this.lastSave = lastSave;
-    }
+//    Note(String note, String title, String lastSave) {
+//        this.note = note;
+//        this.title = title;
+//        this.lastSave = lastSave;
+//    }
 
     public String getNote() {
         return note;

@@ -1,5 +1,6 @@
 package com.example.mynotes;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,12 +10,20 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.JsonReader;
+import android.util.JsonWriter;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +34,7 @@ public class MainActivity extends AppCompatActivity
     private static final int EXISTING_NOTE_ID = 2;
     private static final String TAG = "MainActivity";
 
-    private final List<Note> notesList = new ArrayList<>();
+    private List<Note> notesList = new ArrayList<>();
     private RecyclerView recyclerView;
     private NotesAdapter mAdapter;
 
@@ -43,6 +52,95 @@ public class MainActivity extends AppCompatActivity
 
         // add items in linear layout (i.e in order)
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        // loading saved notes from JSON file (if any have been saved)
+        loadNotes(notesList);
+
+        if (notesList.size() > 0) {
+            mAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        saveNotes(notesList);
+        super.onPause();
+    }
+
+    public void saveNotes(List<Note> notes) {
+        try {
+            FileOutputStream fos = getApplicationContext().
+                    openFileOutput("Notes.json", Context.MODE_PRIVATE);
+            JsonWriter writer = new JsonWriter(new OutputStreamWriter(fos, StandardCharsets.UTF_8));
+            writer.setIndent("  ");
+            writer.beginArray();
+            for (Note n : notes) {
+                saveNote(writer, n);
+            }
+            writer.endArray();
+            writer.close();
+        } catch (Exception e) {
+            e.getStackTrace();
+        }
+    }
+
+    public void saveNote(JsonWriter writer, Note note) {
+        try {
+            writer.beginObject();
+            writer.name("title").value(note.getTitle());
+            writer.name("note").value(note.getNote());
+            writer.name("lastSave").value(note.getLastSave());
+            writer.endObject();
+        } catch (Exception e) {
+            e.getStackTrace();
+        }
+
+    }
+
+    private Note loadNote(JsonReader reader) {
+        Note note = new Note();
+
+        try {
+            reader.beginObject();
+            while (reader.hasNext()) {
+                String tokenName = reader.nextName();
+                switch (tokenName) {
+                    case "title":
+                        note.setTitle(reader.nextString());
+                        break;
+                    case "note":
+                        note.setNote(reader.nextString());
+                        break;
+                    case "lastSave":
+                        note.setLastSave(reader.nextString());
+                        break;
+                    default:
+                        reader.skipValue();
+                        break;
+                }
+            }
+            reader.endObject();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return note;
+    }
+
+    private void loadNotes(List<Note> notes) {
+        try {
+            InputStream is = getApplicationContext().openFileInput("Notes.json");
+            JsonReader reader = new JsonReader(new InputStreamReader(is, StandardCharsets.UTF_8));
+            reader.beginArray();
+            while (reader.hasNext()) {
+                notes.add(loadNote(reader));
+            }
+            reader.endArray();
+        } catch (FileNotFoundException e) {
+            System.out.println("NO EXISTING NOTES FOUND");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     // activity navigation
@@ -78,6 +176,8 @@ public class MainActivity extends AppCompatActivity
             }
         } else if (requestCode == EXISTING_NOTE_ID) {
             if (resultCode == RESULT_OK) {
+                // use the notes position in notesList and update its values instead of creating a
+                // new note
                 Note n;
                 int pos = data.getIntExtra("NOTE_POS", -1);
                 if (pos > -1) {
@@ -87,7 +187,7 @@ public class MainActivity extends AppCompatActivity
                     n.setLastSave(data.getStringExtra("NOTE_TIME"));
                     mAdapter.notifyDataSetChanged();
                 } else {
-                    Log.d(TAG, "onActivityResult: "+ "An error occurred");
+                    Toast.makeText(this, "An error occurred while editing your note", Toast.LENGTH_LONG).show();
                 }
             } else {
                 // data wasn't returned successfully
@@ -127,7 +227,11 @@ public class MainActivity extends AppCompatActivity
     // add/remove notes from list of notes
 
     public void addTop(String title, String body, String time) {
-        notesList.add(0, new Note(body, title, time));
+        Note n = new Note();
+        n.setTitle(title);
+        n.setNote(body);
+        n.setLastSave(time);
+        notesList.add(0, n);
         mAdapter.notifyDataSetChanged();
     }
 
